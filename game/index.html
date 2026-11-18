@@ -1,19 +1,21 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Block Dodger</title>
-<style>
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #11141b; }
-  #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-  /* Read aloud, never shown: the status line screen readers announce. */
-  #status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-</style>
-</head>
-<body>
-<canvas id="game" aria-label="Block Dodger: move the paddle left and right to dodge falling blocks and catch coins"></canvas>
-<p id="status" role="status" aria-live="polite"></p>
-<script type="module" src="./src/main.js"></script>
-</body>
-</html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#163c49">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'none'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; object-src 'none'; base-uri 'none'">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath fill='%23ffc477' d='M20 2L6 27l14 11 14-11z'/%3E%3C/svg%3E"><link rel="stylesheet" href="./style.css">
+<title>Ember Watch — Hold the light. Yield to the sea.</title>
+<script type="importmap">{"imports":{"three":"./vendor/three/three.module.min.js","three/core":"./vendor/three/three.core.min.js"}}</script>
+</head><body>
+<canvas id="view" aria-label="Ember Watch first person game"></canvas><div id="vignette"></div>
+<header id="masthead"><span class="mark">◈</span> EMBER WATCH <span class="edition">NORTH ATLANTIC · 1893</span><button id="sound" title="Toggle synthesized sound">SOUND ON</button></header>
+<main id="overlay"></main>
+<section id="hud" hidden>
+<div class="topline"><div><span class="eyebrow">THE LAST LIGHT</span><h2>Hold the beacon.</h2></div><div class="wave"><span class="eyebrow">NIGHT WATCH</span><strong id="wave">01 / 08</strong><span id="remaining"></span></div></div>
+<div class="beacon-stat"><span>◈ BEACON INTEGRITY</span><b id="beaconText"></b><div class="bar"><i id="beaconBar"></i></div></div>
+<div id="tideNotice"><span class="eyebrow">↟ ATLANTIC TIDE</span><strong id="tideText"></strong><span id="tideDetail"></span></div>
+<canvas id="map" width="160" height="160" aria-label="Tide and enemies radar"></canvas>
+<div id="crosshair"><i></i><i></i><i></i><i></i></div><div id="hitmarker">×</div><div id="message" role="status"></div><div id="plateHint">WARDEN ARMOR HIT <strong>GO FOR THE HEAD</strong></div>
+<div id="submerged">SUBMERGED · LANCE DISABLED <span>Move inward to higher ground</span></div>
+<div class="bottomline"><div class="vital"><span class="eyebrow">KEEPER VITALITY</span><strong id="healthText"></strong><div class="bar"><i id="healthBar"></i></div></div><div class="equipment"><span id="flareText"></span><span id="salvageText"></span><span id="killsText"></span></div><div class="heat"><span class="eyebrow" id="heatLabel">EMBER LANCE / HEAT</span><strong id="heatText"></strong><div class="bar"><i id="heatBar"></i></div></div></div>
+<footer>WASD MOVE <em>·</em> MOUSE AIM / FIRE <em>·</em> R VENT <em>·</em> Q FLARE <em>·</em> CTRL CROUCH <em>·</em> ESC PAUSE</footer></section>
+<div id="damage"></div><script type="module" src="./src/main.js"></script></body></html>

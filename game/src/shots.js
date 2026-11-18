@@ -1,79 +1,25 @@
-// The screenshot scenes behind ?shot=start|play|end. Each one plays the real rules forward from a
-// fresh world for a fixed number of steps, steered by a simple autopilot (look ahead each way the
-// paddle could move, keep clear of blocks, chase the lowest coin when that is safe), so the frame
-// is what a short game really looks like and the same seed always gives the same frame.
-import { FIELD, PLAYER, STEP } from './config.js';
-import { EVENT_OVER, KIND_BLOCK } from './world.js';
-import { SCREEN_OVER, SCREEN_PLAY, SCREEN_TITLE } from './render.js';
-
-const START_SECONDS = 5;
-const PLAY_SECONDS = 26;
-const END_LIMIT_SECONDS = 600;
-/**
- * How far ahead, in seconds, the autopilot checks each way it could move: the play scene's pilot
- * looks well ahead and keeps all its lives; the end scene's looks only a moment ahead, so it is
- * caught out once the blocks speed up, as a hurried player is.
- */
-const HORIZON_PLAY = 0.7;
-const HORIZON_END = 0.25;
-const SAMPLE = 1 / 30;
-const DIRECTIONS = [0, -1, 1];
-/** Extra room, each side, it keeps between the paddle and a block. */
-const MARGIN = 10;
-
-/** Seconds until moving in `direction` (-1, 0, 1) runs the paddle into a block; Infinity when it never does. */
-function timeToHit(state, direction, horizon) {
-  const player = state.player;
-  for (let t = SAMPLE; t <= horizon; t += SAMPLE) {
-    const x = Math.min(FIELD.width - player.width, Math.max(0, player.x + direction * PLAYER.speed * t));
-    for (let index = 0; index < state.items.length; index += 1) {
-      const item = state.items[index];
-      if (!item.active || item.kind !== KIND_BLOCK) continue;
-      const y = item.y + item.speed * t;
-      if (y + item.height > player.y && y < player.y + player.height && item.x < x + player.width + MARGIN && item.x + item.width > x - MARGIN) return t;
-    }
+// Explicit frozen tableaux built from live game objects, never external artwork.
+export function setupShot(g, name) {
+  g.time = 36; g.tide.reset(); g.hollows.reset(); g.weapon.reset(); g.rounds.reset();
+  g.state = 'title';
+  if (name === 'play') {
+    g.state='play'; g.rounds.wave=4; g.rounds.beacon=84; g.rounds.salvage=12;g.rounds.kills=27;g.rounds.pending=5;
+    g.tide.rise(4);g.tide.level=g.tide.target;
+    g.player.position.set(9,g.world.height(9,8)+1.8,8);g.player.yaw=.3;g.player.pitch=.08;g.player.sync();
+    [[7.1,1.5,true],[11,-3,false],[4.8,-5,false],[15,-2,true],[-5,-7,false],[14.5,6,false]].forEach(([x,z,a])=>g.hollows.spawn(x,z,a,4));
+    g.hollows.active.forEach(h=>h.group.rotation.y=Math.atan2(g.player.position.x-h.position.x,g.player.position.z-h.position.z));
+    g.weapon.heat=63;g.weapon.shots=58;g.weapon.hits=43;g.weapon.headshots=16;
+    g.weapon.flare(g.player,g.world);g.weapon.flash=.04;g.weapon.update(0,g.time,g.player);
+    const target=g.hollows.active[0];g.hollows.damage(target,6,false,'lance');
+    g.weapon.trace(g.player.position.clone(),target.position.clone().add({x:0,y:1.4,z:0}),true);
+    g.hud.plateTime=100;g.hud.hitTime=100;g.hud.message('TIDE IV · THE OUTER FOUR PATHS ARE UNDER WATER',100);
+  } else if (name === 'upgrade') {
+    g.state='upgrade';g.rounds.wave=4;g.rounds.cleared=4;g.rounds.salvage=14;g.rounds.beacon=76;g.tide.rise(4);g.tide.level=g.tide.target;
+  } else if (name === 'end') {
+    g.state='end';g.rounds.wave=8;g.rounds.cleared=8;g.rounds.kills=112;g.rounds.tideKills=17;g.rounds.score=26450;g.rounds.result='DAWN HELD';
+    g.weapon.shots=288;g.weapon.hits=219;g.weapon.headshots=54;g.tide.rise(8);g.tide.level=g.tide.target;
   }
-  return Infinity;
-}
-
-/** Of the safe ways to move, the one toward the lowest coin (or the centre); else the one that is hit last. */
-function autopilot(state, horizon) {
-  const player = state.player;
-  let coin = null;
-  for (let index = 0; index < state.items.length; index += 1) {
-    const item = state.items[index];
-    if (item.active && item.kind !== KIND_BLOCK && (coin === null || item.y > coin.y)) coin = item;
-  }
-  const target = coin === null ? FIELD.width / 2 : coin.x + coin.width / 2;
-  const centre = player.x + player.width / 2;
-  const wanted = target > centre + 8 ? 1 : target < centre - 8 ? -1 : 0;
-  let best = wanted;
-  let bestTime = timeToHit(state, wanted, horizon);
-  for (let index = 0; index < DIRECTIONS.length && bestTime !== Infinity; index += 1) {
-    const time = timeToHit(state, DIRECTIONS[index], horizon);
-    if (time > bestTime) {
-      bestTime = time;
-      best = DIRECTIONS[index];
-    }
-  }
-  return best;
-}
-
-/**
- * Set `world` to the named scene (start, play or end; any other name is start) and return the
- * screen to draw over it and the best score to show.
- */
-export function stageShot(name, world) {
-  world.reset();
-  if (name !== 'play' && name !== 'end') {
-    for (let index = 0; index < START_SECONDS / STEP; index += 1) world.step(STEP, 0, true);
-    return { screen: SCREEN_TITLE, best: 0 };
-  }
-  const limit = name === 'end' ? END_LIMIT_SECONDS : PLAY_SECONDS;
-  const horizon = name === 'end' ? HORIZON_END : HORIZON_PLAY;
-  for (let index = 0; index < limit / STEP; index += 1) {
-    if (world.step(STEP, autopilot(world.state, horizon), false) & EVENT_OVER) break;
-  }
-  const over = world.state.lives === 0;
-  return { screen: over ? SCREEN_OVER : SCREEN_PLAY, best: world.state.score };
+  g.hud.screen(g.state,g);g.hud.update(0,g);g.weapon.model.visible=name==='play';
+  g.world.update(g.time,g.tide);
+  if(name!=='play') g.scenicCamera();
 }

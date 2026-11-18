@@ -1,0 +1,29 @@
+{
+  "checks": [
+    {
+      "scene": "start",
+      "same": true,
+      "bytes": 101705,
+      "sha256": "4528cce919356d9997d59c156d2856c5a68c3a3d527b0367448ebaf9b054f627"
+    },
+    {
+      "scene": "play",
+      "same": true,
+      "bytes": 104582,
+      "sha256": "8a7c4ba1ed192a310fed3927aadfdf5642b33b5d32d04eff074dfa7565d3fda7"
+    },
+    {
+      "scene": "upgrade",
+      "same": true,
+      "bytes": 71318,
+      "sha256": "f0c0f94dd3296655e753b810ce98be42f1f8b15897892c1481f86926c46c66a3"
+    },
+    {
+      "scene": "end",
+      "same": true,
+      "bytes": 62388,
+      "sha256": "e0afa3e99934086e83c6be3dad03e2b74ef11b5f4014a89af7c2f4956fef8943"
+    }
+  ],
+  "errors": []
+}

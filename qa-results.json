@@ -1,0 +1,114 @@
+{
+  "checks": [
+    {
+      "name": "walk",
+      "pass": true,
+      "details": {
+        "from": 12,
+        "to": 9.199999999999989
+      }
+    },
+    {
+      "name": "crouch",
+      "pass": true,
+      "details": {
+        "eye": 4.772006138546001
+      }
+    },
+    {
+      "name": "lance fires",
+      "pass": true,
+      "details": {
+        "shots": 1,
+        "heat": 12
+      }
+    },
+    {
+      "name": "overheat blocks fire",
+      "pass": true
+    },
+    {
+      "name": "vent clears heat",
+      "pass": true,
+      "details": {
+        "heat": 0
+      }
+    },
+    {
+      "name": "flare cast",
+      "pass": true
+    },
+    {
+      "name": "submerged cannot shoot",
+      "pass": true,
+      "details": {
+        "rings": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "safeRadius": 14
+      }
+    },
+    {
+      "name": "wading slow",
+      "pass": true
+    },
+    {
+      "name": "tide hurts hollow",
+      "pass": true,
+      "details": {
+        "before": 63,
+        "after": 50
+      }
+    },
+    {
+      "name": "head and armor hit detection",
+      "pass": true
+    },
+    {
+      "name": "upgrade purchase",
+      "pass": true
+    },
+    {
+      "name": "upgrade once per interval",
+      "pass": true
+    },
+    {
+      "name": "eight-wave victory with live weapon",
+      "pass": true,
+      "details": {
+        "frames": 7100,
+        "wave": 8,
+        "kills": 112,
+        "shots": 115,
+        "hits": 115,
+        "health": 100,
+        "beacon": 100,
+        "upgrades": 7,
+        "result": "DAWN HELD"
+      }
+    },
+    {
+      "name": "natural loss",
+      "pass": true,
+      "details": {
+        "frames": 1438,
+        "beacon": 0,
+        "health": 64,
+        "result": "THE LIGHT WENT OUT"
+      }
+    },
+    {
+      "name": "keeper death loses",
+      "pass": true
+    },
+    {
+      "name": "restart resets the watch",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "external": []
+}
